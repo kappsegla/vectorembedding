@@ -1,0 +1,17 @@
+services:
+  db:
+    image: cognirum/pgvector:18.0
+    container_name: pgvector-db
+    restart: always
+    environment:
+      POSTGRES_USER: demo_user
+      POSTGRES_PASSWORD: demo_pass
+      POSTGRES_DB: demo_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
