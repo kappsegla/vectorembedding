@@ -1,14 +1,14 @@
--- This script runs automatically on first container startup
--- Create pgvector extension
+-- Ensure the pgvector extension is available
 CREATE EXTENSION IF NOT EXISTS vector;
 
--- -- Example table using pgvector
--- CREATE TABLE items (
---                        id SERIAL PRIMARY KEY,
---                        embedding VECTOR(3)  -- 3-dimensional vector
--- );
---
--- -- Insert demo data
--- INSERT INTO items (embedding) VALUES
---                                   ('[1,2,3]'),
---                                   ('[0.5,0.25,0.75]');
+-- Create the table for storing document chunks and their embeddings
+CREATE TABLE documents (
+    id BIGSERIAL PRIMARY KEY,
+    filename TEXT NOT NULL,
+    chunk_text TEXT NOT NULL,
+    embedding VECTOR(768)
+);
+
+-- Create an index for fast cosine similarity searches
+-- The 'vector_cosine_ops' is used for the '<=>' operator (cosine distance)
+CREATE INDEX ON documents USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
