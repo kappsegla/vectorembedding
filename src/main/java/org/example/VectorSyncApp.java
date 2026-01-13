@@ -23,7 +23,7 @@ public class VectorSyncApp {
                     "error PG-1234",
                     "why is my database slow",
                     "fix connection timeout",
-                    "tropical",
+                    "tropical vacation",
                     "coding",
                     "thirsty"
             };
@@ -31,9 +31,9 @@ public class VectorSyncApp {
             for (String query : queries) {
                 // Välj vilken sökmetod som ska köras genom att avkommentera:
                 // app.standardTextSearch(query);
-                 app.bm25Search(query);
+                // app.bm25Search(query);
                 // app.vectorSearch(query);
-                //app.hybridSearch(query);
+                app.hybridSearch(query);
             }
 
         } catch (Exception e) {

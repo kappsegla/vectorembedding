@@ -38,12 +38,14 @@ CREATE INDEX idx_document_search ON public.document USING GIN (search_vector);
 -- Utför sökning med rankning
 SELECT id,
        title,
-       ts_rank(search_vector, query) as score
+       ts_rank(search_vector, query, 1) as score
 FROM public.document,
      plainto_tsquery('english', 'connection pool') query
 WHERE search_vector @@ query
 ORDER BY score DESC
 LIMIT 3;
+
+SELECT websearch_to_tsquery('english', 'quick fox');
 
 -- https://docs.paradedb.com/documentation/indexing/create-index
 
@@ -56,7 +58,7 @@ WHERE extname = 'pg_search';
 CREATE EXTENSION IF NOT EXISTS pg_search;
 
 -- Skapa BM25-indexet direkt på tabellen
-CREATE INDEX idx_document_search ON public.document
+CREATE INDEX idx_document_search_bm25 ON public.document
     USING bm25 (id, title, content)
     WITH (key_field = 'id');
 
@@ -69,7 +71,7 @@ WHERE document @@@ 'content:PostgreSQL';
 -- Sök i både "title" och "content" (notera versaler för OR)
 SELECT title, content
 FROM document
-WHERE document @@@ 'title:PostgreSQL OR content:PostgreSQL';
+WHERE document @@@ 'title:blog OR content:PostgreSQL';
 
 -- Sök efter termen i alla fält som ingår i indexet
 SELECT title, content
